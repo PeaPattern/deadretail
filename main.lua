@@ -2,6 +2,7 @@
 
 local Player = game:GetService("Players").LocalPlayer
 local crashEnabled = false
+local rgbEnabled = false
 
 -- Functions:
 
@@ -12,6 +13,10 @@ local function Dead(Amount)
 		end)
         if not crashEnabled then break end
 	end
+end
+
+local function storeColor(Color)
+    game:GetService("ReplicatedStorage").Remotes.SetStoreColor:FireServer(Color)
 end
 
 -- Instances:
@@ -27,17 +32,21 @@ local Amount_Roundify_12px = Instance.new("ImageLabel")
 local Stop = Instance.new("TextButton")
 local Crash_Roundify_12px_2 = Instance.new("ImageLabel")
 local Credits = Instance.new("TextLabel")
+local RGB = Instance.new("TextButton")
+local Crash_Roundify_12px_3 = Instance.new("ImageLabel")
 
 --Properties:
 
 deadretail.Name = "deadretail"
-deadretail.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+deadretail.Parent = game:GetService("CoreGui")
 deadretail.ResetOnSpawn = false
 
 Background.Name = "Background"
 Background.Parent = deadretail
+Background.Active = true
 Background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Background.BackgroundTransparency = 1.000
+Background.Draggable = true
 Background.Position = UDim2.new(0.859922171, 0, 0.566891253, 0)
 Background.Size = UDim2.new(0.0761673078, 0, 0.261693925, 0)
 Background.Image = "rbxassetid://3570695787"
@@ -45,8 +54,6 @@ Background.ImageColor3 = Color3.fromRGB(20, 20, 20)
 Background.ScaleType = Enum.ScaleType.Slice
 Background.SliceCenter = Rect.new(100, 100, 100, 100)
 Background.SliceScale = 0.120
-Background.Active = true
-Background.Draggable = true
 
 titleBack.Name = "titleBack"
 titleBack.Parent = Background
@@ -175,8 +182,38 @@ Credits.TextScaled = true
 Credits.TextSize = 14.000
 Credits.TextWrapped = true
 
+RGB.Name = "RGB"
+RGB.Parent = Background
+RGB.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+RGB.BackgroundTransparency = 1.000
+RGB.BorderSizePixel = 0
+RGB.Position = UDim2.new(0.0383141786, 0, 0.511723757, 0)
+RGB.Size = UDim2.new(0.916983724, 0, 0.0888363346, 0)
+RGB.ZIndex = 2
+RGB.Font = Enum.Font.SourceSansBold
+RGB.Text = "RGB Store"
+RGB.TextColor3 = Color3.fromRGB(255, 255, 255)
+RGB.TextScaled = true
+RGB.TextSize = 14.000
+RGB.TextWrapped = true
+
+Crash_Roundify_12px_3.Name = "Crash_Roundify_12px"
+Crash_Roundify_12px_3.Parent = RGB
+Crash_Roundify_12px_3.Active = true
+Crash_Roundify_12px_3.AnchorPoint = Vector2.new(0.5, 0.5)
+Crash_Roundify_12px_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Crash_Roundify_12px_3.BackgroundTransparency = 1.000
+Crash_Roundify_12px_3.Position = UDim2.new(0.5, 0, 0.5, 0)
+Crash_Roundify_12px_3.Selectable = true
+Crash_Roundify_12px_3.Size = UDim2.new(1, 0, 1, 0)
+Crash_Roundify_12px_3.Image = "rbxassetid://3570695787"
+Crash_Roundify_12px_3.ImageColor3 = Color3.fromRGB(30, 30, 30)
+Crash_Roundify_12px_3.ScaleType = Enum.ScaleType.Slice
+Crash_Roundify_12px_3.SliceCenter = Rect.new(100, 100, 100, 100)
+Crash_Roundify_12px_3.SliceScale = 0.120
+
 -- Main:
-	
+
 Crash.MouseButton1Down:Connect(function()
 	local txt = Amount.Text
 	if tonumber(txt) then
@@ -188,4 +225,30 @@ end)
 
 Stop.MouseButton1Down:Connect(function()
 	crashEnabled = false
+end)
+
+RGB.MouseButton1Down:Connect(function()
+    rgbEnabled = not rgbEnabled
+    if rgbEnabled then
+        RGB.BackgroundColor3 = Color3.fromRGB(0,200,0)
+    else
+        RGB.BackgroundColor3 = Color3.fromRGB(40,40,40)
+    end
+end)
+
+local i=-1
+spawn(function()
+    while true do
+        if rgbEnabled then
+            if i >= 100 then
+                i=0
+            else
+                i=i+1
+                storeColor(Color3.fromHSV(i/100,1,1))
+                task.wait(0.1)
+            end
+        else
+            repeat task.wait() until rgbEnabled
+        end
+    end
 end)
