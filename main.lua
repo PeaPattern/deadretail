@@ -217,6 +217,7 @@ Crash_Roundify_12px_3.SliceScale = 0.120
 Crash.MouseButton1Down:Connect(function()
 	local txt = Amount.Text
 	if tonumber(txt) then
+		crashEnabled = true
 		spawn(function()
 		    Dead(tonumber(txt))
 	    end)
