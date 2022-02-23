@@ -1,5 +1,17 @@
--- Gui to Lua
--- Version: 3.2
+-- Variables:
+
+local Player = game:GetService("Players").LocalPlayer
+local crashEnabled = false
+
+-- Functions:
+
+local function Dead(Amount)
+	for i=1,Amount do
+		spawn(function()
+		    game:GetService("ReplicatedStorage").Remotes.SwitchPlot:InvokeServer(Player)
+	    end)
+	end
+end
 
 -- Instances:
 
@@ -32,6 +44,8 @@ Background.ImageColor3 = Color3.fromRGB(20, 20, 20)
 Background.ScaleType = Enum.ScaleType.Slice
 Background.SliceCenter = Rect.new(100, 100, 100, 100)
 Background.SliceScale = 0.120
+Background.Active = true
+Background.Draggable = true
 
 titleBack.Name = "titleBack"
 titleBack.Parent = Background
@@ -160,43 +174,15 @@ Credits.TextScaled = true
 Credits.TextSize = 14.000
 Credits.TextWrapped = true
 
--- Scripts:
-
-local function ODUWL_fake_script() -- Background.Handler 
-	local script = Instance.new('LocalScript', Background)
-
-	local Player = game:GetService("Players").LocalPlayer
-	local Background = script.Parent
-	local Crash = Background:WaitForChild("Crash")
-	local Amount = Background:WaitForChild("Amount")
-	local Stop = Background:WaitForChild("Stop")
+-- Main:
 	
-	local crashEnabled = false
-	
-	local function Crash(Amount)
-		for i=1,Amount do
-			game:GetService("ReplicatedStorage").Remotes.SwitchPlot:InvokeServer(Player)
-		end
+Crash.MouseButton1Down:Connect(function()
+	local txt = Amount.Text
+	if tonumber(txt) then
+		Dead(tonumber(txt))
 	end
-	
-	Crash.MouseButton1Down:Connect(function()
-		local txt = Amount.Text
-		if tonumber(txt) then
-			Crash(tonumber(txt))
-		end
-	end)
-	
-	Stop.MouseButton1Down:Connect(function()
-		crashEnabled = false
-	end)
-	
-end
-coroutine.wrap(ODUWL_fake_script)()
-local function WUQBT_fake_script() -- Background.GUIfix 
-	local script = Instance.new('LocalScript', Background)
+end)
 
-	script.Parent.Active = true
-	script.Parent.Draggable = true
-	
-end
-coroutine.wrap(WUQBT_fake_script)()
+Stop.MouseButton1Down:Connect(function()
+	crashEnabled = false
+end)
