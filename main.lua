@@ -9,7 +9,8 @@ local function Dead(Amount)
 	for i=1,Amount do
 		spawn(function()
 		    game:GetService("ReplicatedStorage").Remotes.SwitchPlot:InvokeServer(Player)
-	    end)
+		end)
+        if not crashEnabled then break end
 	end
 end
 
@@ -179,7 +180,9 @@ Credits.TextWrapped = true
 Crash.MouseButton1Down:Connect(function()
 	local txt = Amount.Text
 	if tonumber(txt) then
-		Dead(tonumber(txt))
+		spawn(function()
+		    Dead(tonumber(txt))
+	    end)
 	end
 end)
 
