@@ -13,6 +13,7 @@ local function Dead(Amount)
 		end)
         if not crashEnabled then break end
 	end
+	crashEnabled = false
 end
 
 local function storeColor(Color)
